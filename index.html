@@ -34,139 +34,442 @@
         .pulse:hover {
             animation: pulse 1.5s infinite;
         }
+        
+        /* Tabs animation */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Login modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-modal.active {
+            display: flex;
+        }
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen p-4 md:p-8">
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-container">
+            <h2 class="text-2xl font-bold text-center mb-6 text-blue-600">Acesso Restrito</h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Usuário</label>
+                    <input type="text" id="username" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">Entrar</button>
+            </form>
+            <div class="mt-4 text-center">
+                <button id="continueWithoutLogin" class="text-blue-600 hover:text-blue-800 text-sm">Continuar sem login</button>
+            </div>
+        </div>
+    </div>
+
     <div class="max-w-6xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-blue-600 mb-2">Inova<span class="text-indigo-800">TI</span></h1>
             <p class="text-gray-600 text-lg">Sistema de Gerenciamento de Vendas</p>
-        </div>
-
-        <!-- Main Container -->
-        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
-            <!-- Form Section -->
-            <div class="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-                <h2 class="text-xl font-semibold mb-4">
-                    <i class="fas fa-plus-circle mr-2"></i>Adicionar Nova Venda
-                </h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                        <label for="produto" class="block text-sm font-medium mb-1">
-                            <i class="fas fa-box mr-1"></i> Produto
-                        </label>
-                        <input type="text" id="produto" placeholder="Nome do produto" 
-                            class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
-                    </div>
-                    
-                    <div>
-                        <label for="valor" class="block text-sm font-medium mb-1">
-                            <i class="fas fa-money-bill-wave mr-1"></i> Valor (R$)
-                        </label>
-                        <input type="number" id="valor" placeholder="Valor da venda" step="0.01"
-                            class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
-                    </div>
-                    
-                    <div>
-                        <label for="cliente" class="block text-sm font-medium mb-1">
-                            <i class="fas fa-user mr-1"></i> Cliente
-                        </label>
-                        <input type="text" id="cliente" placeholder="Nome do cliente"
-                            class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
-                    </div>
-                    
-                    <div>
-                        <label for="metodo" class="block text-sm font-medium mb-1">
-                            <i class="fas fa-credit-card mr-1"></i> Método de Pagamento
-                        </label>
-                        <select id="metodo" 
-                            class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
-                            <option value="PIX">PIX</option>
-                            <option value="Cartão">Cartão</option>
-                            <option value="Dinheiro">Dinheiro</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="flex flex-wrap gap-3 mt-6">
-                    <button onclick="salvarVenda()" 
-                        class="flex items-center px-6 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-gray-100 transition-all pulse">
-                        <i class="fas fa-save mr-2"></i> Salvar Venda
-                    </button>
-                    
-                    <button onclick="exportarJSON()" 
-                        class="flex items-center px-6 py-2 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200 transition-all">
-                        <i class="fas fa-file-export mr-2"></i> Exportar JSON
-                    </button>
-                    
-                    <button onclick="limparCampos()" 
-                        class="flex items-center px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all">
-                        <i class="fas fa-broom mr-2"></i> Limpar Campos
+            <div class="mt-4">
+                <button id="accessRestrictedBtn" class="text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center mx-auto">
+                    <i class="fas fa-lock mr-2"></i>Acessar área restrita
+                </button>
+                <div id="loggedInInfo" class="hidden mt-2 text-sm text-green-600">
+                    <i class="fas fa-check-circle mr-1"></i>Logado como <span id="loggedInUser"></span>
+                    <button id="logoutBtn" class="ml-2 text-red-600 hover:text-red-800 text-xs">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Sair
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Table Section -->
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-700">
-                        <i class="fas fa-list-alt mr-2"></i>Histórico de Vendas
+        <!-- Tabs Navigation -->
+        <div class="flex mb-6 border-b border-gray-200">
+            <button id="salesTabBtn" class="tab-btn active px-6 py-3 font-medium text-blue-600 border-b-2 border-blue-600">
+                <i class="fas fa-cash-register mr-2"></i>Vendas
+            </button>
+            <button id="vendorsTabBtn" class="tab-btn px-6 py-3 font-medium text-gray-500 hover:text-blue-600 hidden">
+                <i class="fas fa-users-cog mr-2"></i>Vendedores
+            </button>
+        </div>
+
+        <!-- Sales Tab Content -->
+        <div id="salesTab" class="tab-content active">
+            <!-- Form Section -->
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-8">
+                <div class="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+                    <h2 class="text-xl font-semibold mb-4">
+                        <i class="fas fa-plus-circle mr-2"></i>Adicionar Nova Venda
                     </h2>
-                    <div class="text-sm text-gray-500">
-                        Total de vendas: <span id="totalVendas" class="font-bold">0</span>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label for="produto" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-box mr-1"></i> Produto
+                            </label>
+                            <input type="text" id="produto" placeholder="Nome do produto" 
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="valor" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-money-bill-wave mr-1"></i> Valor (R$)
+                            </label>
+                            <input type="number" id="valor" placeholder="Valor da venda" step="0.01"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="cliente" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-user mr-1"></i> Cliente
+                            </label>
+                            <input type="text" id="cliente" placeholder="Nome do cliente"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="metodo" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-credit-card mr-1"></i> Método de Pagamento
+                            </label>
+                            <select id="metodo" 
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
+                                <option value="PIX">PIX</option>
+                                <option value="Cartão">Cartão</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="vendedorNome" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-user-tie mr-1"></i> Vendedor
+                            </label>
+                            <input type="text" id="vendedorNome" placeholder="Nome do vendedor"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="vendedorSenha" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-lock mr-1"></i> Senha do Vendedor
+                            </label>
+                            <input type="password" id="vendedorSenha" placeholder="Senha"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-300 focus:outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mt-6">
+                        <button onclick="salvarVenda()" 
+                            class="flex items-center px-6 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-gray-100 transition-all pulse">
+                            <i class="fas fa-save mr-2"></i> Salvar Venda
+                        </button>
+                        
+                        <button onclick="exportarJSON()" 
+                            class="flex items-center px-6 py-2 bg-indigo-100 text-indigo-700 rounded-lg font-medium hover:bg-indigo-200 transition-all">
+                            <i class="fas fa-file-export mr-2"></i> Exportar JSON
+                        </button>
+                        
+                        <button onclick="limparCampos()" 
+                            class="flex items-center px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all">
+                            <i class="fas fa-broom mr-2"></i> Limpar Campos
+                        </button>
                     </div>
                 </div>
                 
-                <div class="overflow-x-auto rounded-lg border border-gray-200">
-                    <table id="tabelaVendas" class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Produto
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Valor
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Cliente
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Método
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Ações
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200"></tbody>
-                    </table>
+                <!-- Table Section -->
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-700">
+                            <i class="fas fa-list-alt mr-2"></i>Histórico de Vendas
+                        </h2>
+                        <div class="text-sm text-gray-500">
+                            Total de vendas: <span id="totalVendas" class="font-bold">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                        <table id="tabelaVendas" class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Produto
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Valor
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Cliente
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Método
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Vendedor
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Data/Hora
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Ações
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4 text-right text-sm text-gray-500">
+                        <span id="totalValor" class="font-bold">R$ 0,00</span> em vendas
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vendors Tab Content -->
+        <div id="vendorsTab" class="tab-content">
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden mb-8">
+                <!-- Vendor Form Section -->
+                <div class="p-6 bg-gradient-to-r from-indigo-600 to-purple-700 text-white">
+                    <h2 class="text-xl font-semibold mb-4">
+                        <i class="fas fa-user-plus mr-2"></i>Gerenciar Vendedores
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="vendorNome" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-user-tie mr-1"></i> Nome do Vendedor
+                            </label>
+                            <input type="text" id="vendorNome" placeholder="Nome completo"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="vendorSenha" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-lock mr-1"></i> Senha
+                            </label>
+                            <input type="password" id="vendorSenha" placeholder="Senha de acesso"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label for="vendorComissao" class="block text-sm font-medium mb-1">
+                                <i class="fas fa-percentage mr-1"></i> Comissão (%)
+                            </label>
+                            <input type="number" id="vendorComissao" placeholder="0.00" step="0.01" min="0" max="100"
+                                class="w-full px-4 py-2 rounded-lg text-gray-800 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mt-6">
+                        <button onclick="salvarVendedor()" 
+                            class="flex items-center px-6 py-2 bg-white text-indigo-600 rounded-lg font-medium hover:bg-gray-100 transition-all pulse">
+                            <i class="fas fa-save mr-2"></i> Salvar Vendedor
+                        </button>
+                        
+                        <button onclick="limparCamposVendedor()" 
+                            class="flex items-center px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all">
+                            <i class="fas fa-broom mr-2"></i> Limpar Campos
+                        </button>
+                    </div>
                 </div>
                 
-                <div class="mt-4 text-right text-sm text-gray-500">
-                    <span id="totalValor" class="font-bold">R$ 0,00</span> em vendas
+                <!-- Vendors Table Section -->
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-700">
+                            <i class="fas fa-users mr-2"></i>Lista de Vendedores
+                        </h2>
+                        <div class="text-sm text-gray-500">
+                            Total de vendedores: <span id="totalVendedores" class="font-bold">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                        <table id="tabelaVendedores" class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Nome
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Comissão
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Ações
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Global variables
         let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+        let vendedores = JSON.parse(localStorage.getItem('vendedores')) || [];
         let editIndex = -1;
+        let editVendorIndex = -1;
+        let isAdminLoggedIn = false;
+        
+        // Login system
+        function checkLogin() {
+            const loginToken = localStorage.getItem('loginToken');
+            if (loginToken) {
+                try {
+                    const tokenData = JSON.parse(atob(loginToken.split('.')[1]));
+                    if (tokenData.username === 'Fellipe' && tokenData.exp > Date.now()) {
+                        isAdminLoggedIn = true;
+                        document.getElementById('vendorsTabBtn').classList.remove('hidden');
+                        document.getElementById('loggedInInfo').classList.remove('hidden');
+                        document.getElementById('loggedInUser').textContent = 'Fellipe';
+                        document.getElementById('accessRestrictedBtn').classList.add('hidden');
+                    }
+                } catch (e) {
+                    // Invalid token
+                    localStorage.removeItem('loginToken');
+                }
+            }
+        }
+        
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+        
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+        
+        function login(username, password) {
+            if (username === 'Fellipe' && password === '23032024') {
+                // Create a simple token with expiration (1 hour)
+                const tokenData = {
+                    username: username,
+                    exp: Date.now() + 3600000 // 1 hour from now
+                };
+                const token = btoa('header') + '.' + btoa(JSON.stringify(tokenData)) + '.signature';
+                localStorage.setItem('loginToken', token);
+                
+                isAdminLoggedIn = true;
+                document.getElementById('vendorsTabBtn').classList.remove('hidden');
+                document.getElementById('loggedInInfo').classList.remove('hidden');
+                document.getElementById('loggedInUser').textContent = 'Fellipe';
+                document.getElementById('accessRestrictedBtn').classList.add('hidden');
+                hideLoginModal();
+                
+                showAlert('Login realizado com sucesso!', 'success');
+            } else {
+                showAlert('Usuário ou senha incorretos!', 'error');
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('loginToken');
+            isAdminLoggedIn = false;
+            document.getElementById('vendorsTabBtn').classList.add('hidden');
+            document.getElementById('loggedInInfo').classList.add('hidden');
+            document.getElementById('accessRestrictedBtn').classList.remove('hidden');
+            
+            // Switch to sales tab if on vendors tab
+            if (document.getElementById('vendorsTab').classList.contains('active')) {
+                document.getElementById('salesTabBtn').click();
+            }
+            
+            showAlert('Logout realizado com sucesso!', 'success');
+        }
 
+        // Tab switching functionality
+        document.getElementById('salesTabBtn').addEventListener('click', function() {
+            document.getElementById('salesTabBtn').classList.add('active', 'text-blue-600', 'border-blue-600');
+            document.getElementById('salesTabBtn').classList.remove('text-gray-500');
+            document.getElementById('vendorsTabBtn').classList.remove('active', 'text-blue-600', 'border-blue-600');
+            document.getElementById('vendorsTabBtn').classList.add('text-gray-500');
+            
+            document.getElementById('salesTab').classList.add('active');
+            document.getElementById('vendorsTab').classList.remove('active');
+        });
+
+        document.getElementById('vendorsTabBtn').addEventListener('click', function() {
+            if (!isAdminLoggedIn) {
+                showLoginModal();
+                return;
+            }
+            
+            document.getElementById('vendorsTabBtn').classList.add('active', 'text-blue-600', 'border-blue-600');
+            document.getElementById('vendorsTabBtn').classList.remove('text-gray-500');
+            document.getElementById('salesTabBtn').classList.remove('active', 'text-blue-600', 'border-blue-600');
+            document.getElementById('salesTabBtn').classList.add('text-gray-500');
+            
+            document.getElementById('vendorsTab').classList.add('active');
+            document.getElementById('salesTab').classList.remove('active');
+            renderizarTabelaVendedores();
+        });
+
+        // Sales functions
         function salvarVenda() {
             const produto = document.getElementById("produto").value;
             const valor = parseFloat(document.getElementById("valor").value);
             const cliente = document.getElementById("cliente").value;
             const metodo = document.getElementById("metodo").value;
+            const vendedorNome = document.getElementById("vendedorNome").value;
+            const vendedorSenha = document.getElementById("vendedorSenha").value;
 
-            if (!produto || !valor || !cliente) {
+            if (!produto || !valor || !cliente || !vendedorNome || !vendedorSenha) {
                 showAlert("Preencha todos os campos!", "error");
                 return;
             }
 
-            const venda = { produto, valor, cliente, metodo };
+            // Validate vendor
+            const vendedorValido = validarVendedor(vendedorNome, vendedorSenha);
+            if (!vendedorValido) {
+                showAlert("Vendedor inválido ou senha incorreta!", "error");
+                return;
+            }
+
+            const agora = new Date();
+            const dataHora = `${agora.toLocaleDateString()} ${agora.toLocaleTimeString()}`;
+            
+            const venda = {
+                produto,
+                valor,
+                cliente,
+                metodo,
+                vendedor: vendedorNome,
+                dataHora,
+                comissao: vendedorValido.comissao
+            };
 
             if (editIndex >= 0) {
                 vendas[editIndex] = venda;
@@ -182,11 +485,18 @@
             renderizarTabela();
         }
 
+        function validarVendedor(nome, senha) {
+            const vendedor = vendedores.find(v => v.nome === nome && v.senha === senha);
+            return vendedor || false;
+        }
+
         function limparCampos() {
             document.getElementById("produto").value = "";
             document.getElementById("valor").value = "";
             document.getElementById("cliente").value = "";
             document.getElementById("metodo").value = "PIX";
+            document.getElementById("vendedorNome").value = "";
+            document.getElementById("vendedorSenha").value = "";
             editIndex = -1;
         }
 
@@ -212,10 +522,16 @@
                         ${venda.cliente}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                             ${getMethodColor(venda.metodo)}">
                             ${venda.metodo}
                         </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${venda.vendedor} (${venda.comissao}%)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${venda.dataHora}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button onclick="editarVenda(${index})" class="text-indigo-600 hover:text-indigo-900 mr-3">
@@ -251,8 +567,9 @@
             document.getElementById("valor").value = venda.valor;
             document.getElementById("cliente").value = venda.cliente;
             document.getElementById("metodo").value = venda.metodo;
+            document.getElementById("vendedorNome").value = venda.vendedor;
             editIndex = index;
-            
+
             // Scroll to form
             document.querySelector('input[id="produto"]').focus();
         }
@@ -294,6 +611,122 @@
             showAlert("JSON exportado com sucesso!", "success");
         }
 
+        // Vendor functions
+        function salvarVendedor() {
+            if (!isAdminLoggedIn) {
+                showAlert("Acesso negado! Faça login como administrador.", "error");
+                return;
+            }
+            
+            const nome = document.getElementById("vendorNome").value;
+            const senha = document.getElementById("vendorSenha").value;
+            const comissao = parseFloat(document.getElementById("vendorComissao").value);
+
+            if (!nome || !senha || isNaN(comissao)) {
+                showAlert("Preencha todos os campos corretamente!", "error");
+                return;
+            }
+
+            const vendedor = { nome, senha, comissao };
+
+            if (editVendorIndex >= 0) {
+                vendedores[editVendorIndex] = vendedor;
+                editVendorIndex = -1;
+                showAlert("Vendedor atualizado com sucesso!", "success");
+            } else {
+                // Check if vendor already exists
+                const existe = vendedores.some(v => v.nome === nome);
+                if (existe) {
+                    showAlert("Já existe um vendedor com este nome!", "error");
+                    return;
+                }
+                vendedores.push(vendedor);
+                showAlert("Vendedor cadastrado com sucesso!", "success");
+            }
+
+            localStorage.setItem("vendedores", JSON.stringify(vendedores));
+            limparCamposVendedor();
+            renderizarTabelaVendedores();
+        }
+
+        function limparCamposVendedor() {
+            document.getElementById("vendorNome").value = "";
+            document.getElementById("vendorSenha").value = "";
+            document.getElementById("vendorComissao").value = "";
+            editVendorIndex = -1;
+        }
+
+        function renderizarTabelaVendedores() {
+            const tbody = document.querySelector("#tabelaVendedores tbody");
+            tbody.innerHTML = "";
+
+            vendedores.forEach((vendedor, index) => {
+                const row = document.createElement("tr");
+                row.className = index % 2 === 0 ? "bg-white" : "bg-gray-50";
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        ${vendedor.nome}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${vendedor.comissao}%
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editarVendedor(${index})" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deletarVendedor(${index})" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById("totalVendedores").textContent = vendedores.length;
+        }
+
+        function editarVendedor(index) {
+            const vendedor = vendedores[index];
+            document.getElementById("vendorNome").value = vendedor.nome;
+            document.getElementById("vendorSenha").value = vendedor.senha;
+            document.getElementById("vendorComissao").value = vendedor.comissao;
+            editVendorIndex = index;
+
+            // Scroll to form
+            document.querySelector('input[id="vendorNome"]').focus();
+        }
+
+        function deletarVendedor(index) {
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Todas as vendas deste vendedor também serão removidas!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, deletar!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const nomeVendedor = vendedores[index].nome;
+                    
+                    // Remove vendor
+                    vendedores.splice(index, 1);
+                    localStorage.setItem("vendedores", JSON.stringify(vendedores));
+                    
+                    // Remove all sales from this vendor
+                    vendas = vendas.filter(v => v.vendedor !== nomeVendedor);
+                    localStorage.setItem("vendas", JSON.stringify(vendas));
+                    
+                    renderizarTabelaVendedores();
+                    renderizarTabela();
+                    showAlert("Vendedor e vendas relacionadas deletadas com sucesso!", "success");
+                }
+            });
+        }
+
+        // Utility functions
         function showAlert(message, type) {
             const Toast = Swal.mixin({
                 toast: true,
@@ -313,16 +746,36 @@
             });
         }
 
-        // Torna as funções globais para uso nos botões
+        // Event listeners
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            login(username, password);
+        });
+        
+        document.getElementById('accessRestrictedBtn').addEventListener('click', showLoginModal);
+        document.getElementById('continueWithoutLogin').addEventListener('click', hideLoginModal);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+
+        // Make functions global for use in buttons
         window.salvarVenda = salvarVenda;
         window.limparCampos = limparCampos;
         window.exportarJSON = exportarJSON;
         window.editarVenda = editarVenda;
         window.deletarVenda = deletarVenda;
+        window.salvarVendedor = salvarVendedor;
+        window.limparCamposVendedor = limparCamposVendedor;
+        window.editarVendedor = editarVendedor;
+        window.deletarVendedor = deletarVendedor;
 
-        // Renderiza a tabela ao carregar
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
             renderizarTabela();
+            if (isAdminLoggedIn) {
+                renderizarTabelaVendedores();
+            }
         });
     </script>
 </body>
